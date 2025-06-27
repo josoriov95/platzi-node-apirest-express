@@ -1,41 +1,41 @@
 const express = require('express');
 const cors = require('cors');
-const routerApi = require('./routes')
+const serverless = require('serverless-http');
 
-const {logErrors, errorHandler, boomErrorHandler} = require('./middlewares/error.handler');
+const routerApi = require('../routes');
+const { logErrors, errorHandler, boomErrorHandler } = require('../middlewares/error.handler');
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-// Para los posts (middleware json de express)
+// Middleware para permitir POST JSON
 app.use(express.json());
 
-app.get('/api', (req, res) => {
-    res.send('Hola desde mi server en express');
-})
-
-const whitelist = ['http://localhost','http://localhost:8080','http://localhost:3000'];
+// Configuración de CORS
+const whitelist = ['http://localhost', 'http://localhost:8080', 'http://localhost:3000'];
 const options = {
-    origin: (origin, callback)=>{
-        if(whitelist.includes(origin)){
+    origin: (origin, callback) => {
+        if (!origin || whitelist.includes(origin)) {
             callback(null, true);
-        }else{
+        } else {
             callback(new Error('Origen no permitido'));
         }
-    }
-}
-
-routerApi(app);
-
+    },
+};
 app.use(cors(options));
 
+// Ruta base de prueba
+app.get('/', (req, res) => {
+    res.send('Hola desde mi server Express en Vercel');
+});
+
+// Tus rutas API
+routerApi(app);
+
+// Middlewares de errores
 app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-
-app.listen(port, () => {
-    console.log('Running on port: ' + port);
-});
-
+// Exportar para serverless
 module.exports = app;
+module.exports.handler = serverless(app);
