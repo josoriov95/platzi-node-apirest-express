@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const serverless = require('serverless-http');
 
-const routerApi = require('../routes');
-const { logErrors, errorHandler, boomErrorHandler } = require('../middlewares/error.handler');
+const routerApi = require('./routes');
+const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler');
 
 const app = express();
 
