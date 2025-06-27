@@ -14,7 +14,6 @@ app.get('/api', (req, res) => {
     res.send('Hola desde mi server en express');
 })
 
-routerApi(app);
 const whitelist = ['http://localhost','http://localhost:8080','http://localhost:3000'];
 const options = {
     origin: (origin, callback)=>{
@@ -25,7 +24,10 @@ const options = {
         }
     }
 }
-app.use(cors());
+
+routerApi(app);
+
+app.use(cors(options));
 
 app.use(logErrors);
 app.use(boomErrorHandler);
