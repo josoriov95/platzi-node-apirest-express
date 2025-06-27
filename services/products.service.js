@@ -16,7 +16,7 @@ class ProductsService {
             });
         }
     }
-    create(data) {
+    async create(data) {
         const newProduct = {
             id: faker.string.uuid(),
             ...data
@@ -24,13 +24,27 @@ class ProductsService {
         this.products.push(newProduct);
         return newProduct;
     }
-    find() {
-        return this.products;
+    async find() {
+        return new Promise((resolve, reject) => {
+            setTimeout(()=>{
+                resolve(this.products);
+            }, 2500);
+        })
     }
-    findOne(id) {
-        return this.products.find(item => item.id == id);
+    async findOne(id) {
+        return new Promise((resolve, reject) => {
+            setTimeout(()=>{
+                const product = this.products.find(item => item.id == id);
+                if(product){
+                    resolve(product);
+                }else{
+                    reject('Product Not Found');
+                }
+            }, 2500)
+        })
+
     }
-    update(id, changes) {
+    async update(id, changes) {
         const index = this.products.findIndex(item => item.id == id);
         if (index == -1) {
             throw new Error('Product Not Found');
@@ -42,7 +56,7 @@ class ProductsService {
         };
         return this.products[index];
     }
-    delete(id) {
+    async delete(id) {
         const index = this.products.findIndex(item => item.id == id);
         if (index == -1) {
             throw new Error('Product Not Found');
