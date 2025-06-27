@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 // Para los posts (middleware json de express)
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('Hola desde mi server en express');
 })
 
@@ -36,3 +36,4 @@ app.listen(port, () => {
     console.log('Running on port: ' + port);
 });
 
+module.exports = app;
