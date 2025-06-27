@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const ProductsService = require('./../services/products.service');
 const service = new ProductsService();
+const validatorHandler = require('./../middlewares/validator.handler');
+const { createProductSchema, updateProductSchema, getProductSchema } = require('./../schemas/product.schema');
 
 //** Products */
 // Find
@@ -11,18 +13,23 @@ router.get('/', async (req, res) => {
 });
 
 // FindOne
-router.get('/:id', async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const product = await service.findOne(id);
-        res.json(product);
-    } catch (error) {
-        next(error);
+router.get('/:id',
+    validatorHandler(getProductSchema, 'params'),
+    async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const product = await service.findOne(id);
+            res.json(product);
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 // Create
-router.post('/', async (req, res) => {
+router.post('/',
+    validatorHandler(createProductSchema, 'body'),
+    async (req, res) => {
     const body = req.body;
     const newProduct = await service.create(body);
     res.status(201).json(newProduct);
@@ -30,7 +37,10 @@ router.post('/', async (req, res) => {
 
 
 // Update
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id',
+    validatorHandler(getProductSchema, 'params'),
+    validatorHandler(updateProductSchema, 'body'),
+    async (req, res, next) => {
     try {
         const { id } = req.params;
         const body = req.body;
